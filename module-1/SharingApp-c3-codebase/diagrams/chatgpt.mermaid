@@ -1,0 +1,83 @@
+@startuml
+skinparam componentStyle rectangle
+title SharingApp (Android) – Component Diagram
+
+'== External environment
+component "Android Framework" as AndroidFW
+component "Device Storage\n(File system)" as Storage
+
+'== UI layer (Activities/Fragments)
+package "UI Layer" {
+  [ItemListActivity]
+  [AddEditItemActivity]
+  [ContactListActivity]
+  [ContactDetailActivity]
+}
+
+'== Application/Use-Case layer (Controllers)
+package "Application / Use-Case Layer" {
+  [ItemController]
+  [ContactController]
+  [LoanController]
+}
+
+'== Domain layer (Entities & Collections)
+package "Domain Layer" {
+  [Item]
+  [ItemList]
+  [Contact]
+  [ContactList]
+  [Loan]
+  [LoanList]
+}
+
+'== Persistence / Infrastructure layer
+package "Infrastructure" {
+  [JsonSerializer]
+  [FileRepository]
+  [ImageStore]
+}
+
+'== Interfaces (provided/required)
+interface IItemService
+interface IContactService
+interface ILoanService
+interface IRepository <<storage>>
+interface ISerializer
+
+'== Provided interfaces from controllers to UI
+[ItemController] -up-|> IItemService
+[ContactController] -up-|> IContactService
+[LoanController] -up-|> ILoanService
+
+'== Required interfaces from controllers to infra
+[ItemController] ..> IRepository : requires
+[ContactController] ..> IRepository : requires
+[LoanController] ..> IRepository : requires
+
+'== Infra implementations
+[FileRepository] -up-|> IRepository
+[JsonSerializer] -up-|> ISerializer
+[FileRepository] ..> ISerializer : uses
+
+'== UI depends on application services
+[ItemListActivity] ..> IItemService
+[AddEditItemActivity] ..> IItemService
+[ContactListActivity] ..> IContactService
+[ContactDetailActivity] ..> IContactService
+
+'== Controllers operate on domain objects
+[ItemController] ..> [Item]
+[ItemController] ..> [ItemList]
+[ContactController] ..> [Contact]
+[ContactController] ..> [ContactList]
+[LoanController] ..> [Loan]
+[LoanController] ..> [LoanList]
+
+'== Infra talks to Android + Storage
+[FileRepository] ..> Storage
+[ImageStore] ..> Storage
+[JsonSerializer] ..> AndroidFW : JSON libs / context
+[FileRepository] ..> AndroidFW : Context, I/O APIs
+
+@enduml
