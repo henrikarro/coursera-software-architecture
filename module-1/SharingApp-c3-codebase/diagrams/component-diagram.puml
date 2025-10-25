@@ -1,0 +1,15 @@
+@startuml
+[Web Browser]
+[Android App]
+package "Server" {
+  HTTP -- [Web Server]
+  API -- [Application Server]
+}
+database "Database" {
+  interface SQL
+}
+[Android App] --( HTTP
+[Web Browser] --( HTTP
+[Web Server] --( API
+[Application Server] --( SQL
+@enduml
