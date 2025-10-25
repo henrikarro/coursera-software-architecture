@@ -1,0 +1,31 @@
+@startuml
+node Server {
+  artifact "ws.jar" <<artifact>>
+  artifact config <<artifact>>
+  component "Web Server" <<component>>
+  "ws.jar" ..> "Web Server" : <<manifests>>
+  "Web Server" ..> config : <<uses>>
+  artifact "as.jar" <<artifact>>
+  component "App Server" <<component>>
+  "as.jar" ..> "App Server" : <<manifests>>
+  artifact "db.jar" <<artifact>>
+  artifact xsd <<artifact>>
+  database "Database" <<component>>
+  "db.jar" ..> "Database" : <<manifests>>
+  Database ..> xsd : <<uses>>
+}
+node "Cell Phone" {
+  artifact APK <<artifact>>
+  component "Mobile App" <<component>>
+  APK ..> "Mobile App" : <<manifests>>
+}
+node "Web Browser" {
+  artifact HTML <<artifact>>
+  component "Web App" <<component>>
+  HTML ..> "Web App" : <<manifests>>
+}
+"Mobile App" --> "Web Server" : HTTP
+"Web App" --> "Web Server" : HTTP
+"Web Server" --> "App Server" : API
+"App Server" --> "Database" : "Read/Write"
+@enduml
