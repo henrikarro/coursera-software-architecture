@@ -7,7 +7,60 @@ component "Android Framework" as AndroidFW
 component "Device Storage\n(File system)" as Storage
 
 '== UI layer (Activities/Fragments)
-package "UI Layer" {
+package "UI Layer" {flowchart TB
+  subgraph UI[UI Layer]
+    A[ItemListActivity]
+    B[AddEditItemActivity]
+    C[ContactListActivity]
+    D[ContactDetailActivity]
+  end
+
+  subgraph APP[Application / Use-Case Layer]
+    IC[ItemController]
+    CC[ContactController]
+    LC[LoanController]
+  end
+
+  subgraph DOMAIN[Domain Layer]
+    I[Item] --> IL[ItemList]
+    CT[Contact] --> CL[ContactList]
+    L[Loan] --> LL[LoanList]
+  end
+
+  subgraph INFRA[Infrastructure]
+    FR[FileRepository]
+    JS[JsonSerializer]
+    IS[ImageStore]
+  end
+
+  AFW[Android Framework]
+  FS[(Device Storage)]
+
+  %% UI uses services (controllers)
+  A --> IC
+  B --> IC
+  C --> CC
+  D --> CC
+
+  %% Controllers manipulate domain
+  IC --> I
+  IC --> IL
+  CC --> CT
+  CC --> CL
+  LC --> L
+  LC --> LL
+
+  %% Controllers require repositories
+  IC -.-> FR
+  CC -.-> FR
+  LC -.-> FR
+
+  %% Infra depends on Android + filesystem
+  FR --> JS
+  FR --> AFW
+  JS --> AFW
+  FR --> FS
+  IS --> FS
   [ItemListActivity]
   [AddEditItemActivity]
   [ContactListActivity]
