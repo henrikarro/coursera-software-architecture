@@ -1,15 +1,16 @@
 @startuml
-[Web Browser]
+[Web App]
 [Android App]
 package "Server" {
-  HTTP -- [Web Server]
-  API -- [Application Server]
+    HTTP1 -- [Web Server]
+    HTTP2 -- [Web Server]
+    API -- [Application Server]
 }
 database "Database" {
-  interface SQL
+    interface SQL
 }
-[Android App] --( HTTP
-[Web Browser] --( HTTP
+[Android App] --( HTTP2
+[Web App] --( HTTP1
 [Web Server] --( API
 [Application Server] --( SQL
 @enduml
